@@ -9,13 +9,12 @@ const nextBtn = document.getElementById('next-btn');
 const userGuess = document.getElementById('user-guess');
 
 nextBtn.addEventListener('click', async () => {
-
-    if (currentIndex === technologies.length - 1) {
-        alert(`Game Over! Refresh the page to play again. Your final score is ${score}`);
-    }
-
     const guess = userGuess.value.trim() || '';
     if (isNameDisplayed) {
+        if (currentIndex === technologies.length - 1) {
+            alert(`Game Over! Please reload the page to play again.\nYour final score is ${score}`);
+            return;
+        }
         currentIndex = (currentIndex + 1) % technologies.length;
         displayTechImage();
         userGuess.disabled = false;
