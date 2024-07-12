@@ -9,11 +9,16 @@ const nextBtn = document.getElementById('next-btn');
 const userGuess = document.getElementById('user-guess');
 
 nextBtn.addEventListener('click', async () => {
+
+    if (currentIndex === technologies.length - 1) {
+        alert(`Game Over! Refresh the page to play again. Your final score is ${score}`);
+    }
+
     const guess = userGuess.value.trim() || '';
-    console.log(guess);
     if (isNameDisplayed) {
         currentIndex = (currentIndex + 1) % technologies.length;
         displayTechImage();
+        userGuess.disabled = false;
         techName.style.display = 'none';
     } else {
         await fetchTechName(currentIndex, guess);
@@ -57,6 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 function updateScoreUI() {
     document.getElementById('score').textContent = `Score: ${score}`;
     userGuess.value = '';
+    userGuess.disabled = true;
 }
 
 // Function to handle user guesses
