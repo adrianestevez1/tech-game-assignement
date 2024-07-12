@@ -26,6 +26,12 @@ nextBtn.addEventListener('click', async () => {
     isNameDisplayed = !isNameDisplayed;
 });
 
+userGuess.addEventListener('keyup', function (event) {
+    if (event.key === 'Enter') {
+        nextBtn.click();
+    }
+});
+
 function displayTechImage() {
     const tech = technologies[currentIndex];
     techImage.src = tech.image;
