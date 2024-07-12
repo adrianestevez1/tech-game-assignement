@@ -1,19 +1,22 @@
 let currentIndex = 0;
 let technologies = [];
 let isNameDisplayed = false;
+let score = 0;
 
 const techImage = document.getElementById('tech-image');
 const techName = document.getElementById('tech-name');
 const nextBtn = document.getElementById('next-btn');
+const userGuess = document.getElementById('user-guess');
 
-nextBtn.addEventListener('click', () => {
-    console.log('clicked', technologies, isNameDisplayed, currentIndex);
+nextBtn.addEventListener('click', async () => {
+    const guess = userGuess.value.trim() || '';
+    console.log(guess);
     if (isNameDisplayed) {
         currentIndex = (currentIndex + 1) % technologies.length;
         displayTechImage();
         techName.style.display = 'none';
     } else {
-        fetchTechName(currentIndex);
+        await fetchTechName(currentIndex, guess);
     }
     isNameDisplayed = !isNameDisplayed;
 });
@@ -29,23 +32,40 @@ function displayTechName(name) {
     techName.style.display = 'block';
 }
 
-function fetchTechName(index) {
-    fetch(`/tech-name/${index}`)
+async function fetchTechName(index, guess) {
+    await fetch(`/tech-name/${index}`)
         .then(response => response.json())
         .then(data => {
             displayTechName(data.name);
+            handleGuess(guess, data.name);
         })
         .catch(error => {
             console.error('Error fetching tech name:', error);
         });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetch('/techs')
+document.addEventListener('DOMContentLoaded', async () => {
+    await fetch('/techs')
         .then(response => response.json())
         .then(data => {
-            console.log('data', data);
             technologies = data;
             displayTechImage(); // Display the first image initially
         });
 });
+
+// Function to update the score display
+function updateScoreUI() {
+    document.getElementById('score').textContent = `Score: ${score}`;
+    userGuess.value = '';
+}
+
+// Function to handle user guesses
+function handleGuess(userGuessText, correctAnswer) {
+    if (userGuessText.toLowerCase() === correctAnswer.toLowerCase()) {
+        score++;
+        alert('Correct guess!');
+    } else {
+        alert('Wrong guess :(');
+    }
+    updateScoreUI();
+}
